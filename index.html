@@ -189,6 +189,18 @@
     .fb-title { font-size: 13px; font-weight: 600; color: #fff; display: flex; align-items: center; gap: 6px; }
     .fb-meta { font-size: 11px; color: #525252; line-height: 1.6; }
     .fb-meta code { color: #a3a3a3; background: #1a1a1a; padding: 1px 5px; border-radius: 3px; font-size: 10px; }
+    .fb-id-row { display: flex; flex-direction: column; gap: 4px; }
+    .fb-id-label { font-size: 10px; font-weight: 600; letter-spacing: 0.05em; color: #525252; text-transform: uppercase; }
+    .fb-id-input {
+      width: 100%; padding: 8px 10px;
+      background: #141414; border: 1px solid #262626; border-radius: 6px;
+      color: #e5e5e5; font-size: 11px;
+      font-family: "SF Mono", Monaco, "Courier New", monospace;
+      outline: none;
+    }
+    .fb-id-input:focus { border-color: #f472b6; }
+    .fb-id-input::placeholder { color: #333; }
+    .fb-id-input.has-value { border-color: #10b981; background: rgba(16, 185, 129, 0.03); }
     .fb-textarea {
       width: 100%; min-height: 80px; padding: 10px;
       background: #141414; border: 1px solid #262626; border-radius: 8px;
@@ -279,6 +291,14 @@
       Send Feedback to Slack
     </div>
     <div class="fb-meta" id="fbMeta"></div>
+    <div class="fb-id-row">
+      <label class="fb-id-label">Conversation ID</label>
+      <input type="text" id="fbConvId" class="fb-id-input" placeholder="Paste conversation_id from extension...">
+    </div>
+    <div class="fb-id-row">
+      <label class="fb-id-label">Visitor ID</label>
+      <input type="text" id="fbVisitorId" class="fb-id-input" placeholder="Paste visitor_id from extension...">
+    </div>
     <textarea id="fbText" class="fb-textarea" placeholder="Describe the issue or feedback..."></textarea>
     <div class="fb-actions">
       <button class="btn btn-cancel" onclick="toggleFeedback()">Cancel</button>
@@ -310,6 +330,26 @@
     // ─── State ───────────────────────────────────────────────────────
     var currentAgentId = null;
     var currentEnv = 'app';
+    var detectedConvId = null;
+    var detectedVisitorId = null;
+
+    // ─── Listen for postMessage from Docket iframe ───────────────────
+    window.addEventListener('message', function(e) {
+      if (!e.data || typeof e.data !== 'object') return;
+      var d = e.data;
+      var cid = d.conversation_id || d.conversationId || (d.data && (d.data.conversation_id || d.data.conversationId));
+      var vid = d.visitor_id || d.visitorId || (d.data && d.data.visitor && d.data.visitor.id) || (d.visitor && d.visitor.id);
+      if (cid) {
+        detectedConvId = cid;
+        var el = document.getElementById('fbConvId');
+        if (el && !el.value) { el.value = cid; el.classList.add('has-value'); }
+      }
+      if (vid) {
+        detectedVisitorId = vid;
+        var el = document.getElementById('fbVisitorId');
+        if (el && !el.value) { el.value = vid; el.classList.add('has-value'); }
+      }
+    });
 
     // ─── Init ────────────────────────────────────────────────────────
     (function init() {
@@ -402,9 +442,21 @@
       var isOpen = panel.classList.toggle('open');
       if (isOpen) {
         updateMeta();
+        // Pre-fill with detected IDs if fields are empty
+        var convEl = document.getElementById('fbConvId');
+        var visEl = document.getElementById('fbVisitorId');
+        if (detectedConvId && !convEl.value) { convEl.value = detectedConvId; convEl.classList.add('has-value'); }
+        if (detectedVisitorId && !visEl.value) { visEl.value = detectedVisitorId; visEl.classList.add('has-value'); }
         document.getElementById('fbText').focus();
       }
     }
+
+    // Toggle green border on ID inputs
+    document.addEventListener('input', function(e) {
+      if (e.target.classList && e.target.classList.contains('fb-id-input')) {
+        e.target.classList.toggle('has-value', !!e.target.value.trim());
+      }
+    });
 
     function updateMeta() {
       var label = (SAVED_AGENTS.find(function(a) { return a.id === currentAgentId; }) || {}).name || 'Custom';
@@ -439,20 +491,36 @@
       if (!comment) { toast('Please add a comment', 'error'); return; }
       if (!currentAgentId) { toast('No agent loaded', 'error'); return; }
 
+      var convId = document.getElementById('fbConvId').value.trim();
+      var visitorId = document.getElementById('fbVisitorId').value.trim();
       var now = new Date();
       var label = (SAVED_AGENTS.find(function(a) { return a.id === currentAgentId; }) || {}).name || 'Custom';
 
       var blocks = [
         { type: 'header', text: { type: 'plain_text', text: 'Agent Test Feedback', emoji: true } },
         { type: 'section', fields: [
-            { type: 'mrkdwn', text: '*Agent:*\n' + label + '\n`' + currentAgentId + '`' },
+            { type: 'mrkdwn', text: '*Conversation ID:*\n`' + (convId || 'N/A') + '`' },
+            { type: 'mrkdwn', text: '*Visitor ID:*\n`' + (visitorId || 'N/A') + '`' },
             { type: 'mrkdwn', text: '*Environment:*\n' + currentEnv.toUpperCase() },
-            { type: 'mrkdwn', text: '*Standalone:*\n<' + AGENT_BASE_URL + '/' + currentAgentId + '|Open Agent>' },
             { type: 'mrkdwn', text: '*Time:*\n' + now.toLocaleString() },
         ]},
+        { type: 'section', fields: [
+            { type: 'mrkdwn', text: '*Agent:*\n' + label + '\n`' + currentAgentId + '`' },
+            { type: 'mrkdwn', text: '*Standalone:*\n<' + AGENT_BASE_URL + '/' + currentAgentId + '|Open Agent>' },
+        ]},
         { type: 'section', text: { type: 'mrkdwn', text: '*Comment:*\n' + comment } },
-        { type: 'context', elements: [{ type: 'mrkdwn', text: 'Sent from Docket Agent Tester' }] },
       ];
+
+      if (convId) {
+        var pkUrl = buildPortkeyUrl(convId);
+        var kbUrl = buildKibanaUrl(convId);
+        var actionElements = [];
+        if (pkUrl) actionElements.push({ type: 'button', text: { type: 'plain_text', text: 'Portkey Logs' }, url: pkUrl });
+        if (kbUrl) actionElements.push({ type: 'button', text: { type: 'plain_text', text: 'Kibana Logs' }, url: kbUrl });
+        if (actionElements.length) blocks.push({ type: 'actions', elements: actionElements });
+      }
+
+      blocks.push({ type: 'context', elements: [{ type: 'mrkdwn', text: 'Sent from Docket Agent Tester' }] });
 
       btn.disabled = true;
       btn.textContent = 'Sending...';
