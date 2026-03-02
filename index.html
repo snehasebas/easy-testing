@@ -260,21 +260,22 @@
     }
   </script>
 
-  <!-- SCRIPT 3: Load config from external file (gitignored) -->
-  <script src="config.js"></script>
-
-  <!-- SCRIPT 4: Toolbar UI logic, Slack feedback -->
+  <!-- SCRIPT 3: Toolbar UI logic, Slack feedback -->
   <script>
-    if (typeof CONFIG === 'undefined') {
-      document.getElementById('emptyState').innerHTML =
-        '<p style="color:#ef4444"><strong>Missing config.js</strong></p>' +
-        '<small>Copy <code>config.example.js</code> to <code>config.js</code> and fill in your values.</small>';
-    }
+    var SAVED_AGENTS = [
+      { name: 'Default Test Agent', id: '1b81b9ed-ce6a-4b73-9f71-94cc0a9c4ab0' },
+      // { name: 'Client Name', id: 'their-agent-id-here' },
+    ];
 
-    var SAVED_AGENTS = (typeof CONFIG !== 'undefined' && CONFIG.SAVED_AGENTS) || [];
-    var SLACK_WEBHOOK_URL = (typeof CONFIG !== 'undefined' && CONFIG.SLACK_WEBHOOK_URL) || '';
-    var PORTKEY_ORG_IDS = (typeof CONFIG !== 'undefined' && CONFIG.PORTKEY_ORG_IDS) || {};
-    var KIBANA_CONFIG = (typeof CONFIG !== 'undefined' && CONFIG.KIBANA_CONFIG) || {};
+    var SLACK_WEBHOOK_URL = 'https://hooks.slack.com/services/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';
+    var PORTKEY_ORG_IDS = {
+      app: '0501e7ad-fe7d-4304-a2b3-9d3a73176fcf',
+      dev: 'd89a67c9-a650-4107-bad4-c3d3cd7641cb',
+    };
+    var KIBANA_CONFIG = {
+      dev: { baseUrl: 'https://logging.dev.docketai.com', dataViewId: '49b05873-fec8-43d1-a5b7-222746f7aa66' },
+      app: { baseUrl: 'https://logging.app.docketai.com', dataViewId: 'fec2389e-a11f-483b-8522-7f6491a7109c' },
+    };
 
     var params = new URLSearchParams(window.location.search);
     var currentAgentId = params.get('agent') || null;
