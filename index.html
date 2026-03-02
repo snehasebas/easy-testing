@@ -6,32 +6,21 @@
   <title>Docket Agent Tester</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: #0a0a0a;
-      color: #e5e5e5;
-      height: 100vh;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
+      background: #0a0a0a; color: #e5e5e5; height: 100vh; overflow: hidden;
+      display: flex; flex-direction: column;
     }
 
     .toolbar {
-      background: #0c0c0c;
-      border-bottom: 1px solid #1a1a1a;
-      padding: 8px 16px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-shrink: 0;
+      background: #0c0c0c; border-bottom: 1px solid #1a1a1a; padding: 8px 16px;
+      display: flex; align-items: center; gap: 10px; flex-shrink: 0;
     }
     .toolbar-brand { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
     .toolbar-brand svg { color: #f472b6; width: 18px; height: 18px; }
     .toolbar-brand-text { font-size: 14px; font-weight: 700; color: #fff; }
     .toolbar-brand-text span { color: #f472b6; }
     .sep { width: 1px; height: 24px; background: #262626; flex-shrink: 0; }
-
     select, .text-input {
       padding: 6px 10px; background: #141414; border: 1px solid #262626;
       border-radius: 5px; color: #e5e5e5; font-size: 12px; font-family: inherit; outline: none;
@@ -45,7 +34,6 @@
     .text-input { font-family: "SF Mono", Monaco, "Courier New", monospace; width: 260px; }
     select:focus, .text-input:focus { border-color: #f472b6; }
     .text-input::placeholder { color: #404040; }
-
     .btn {
       padding: 6px 12px; border: none; border-radius: 5px; font-size: 11px; font-weight: 600;
       cursor: pointer; font-family: inherit; transition: all 0.15s;
@@ -55,7 +43,6 @@
     .btn-go:hover { background: #f9a8d4; }
     .btn-reset { background: transparent; border: 1px solid #dc2626; color: #ef4444; }
     .btn-reset:hover { background: rgba(220, 38, 38, 0.1); }
-
     .env-toggle { display: flex; background: #141414; border-radius: 5px; padding: 2px; border: 1px solid #262626; }
     .env-btn {
       padding: 4px 10px; font-size: 10px; font-weight: 600; text-transform: uppercase;
@@ -63,95 +50,41 @@
       color: #525252; cursor: pointer; font-family: inherit; transition: all 0.15s;
     }
     .env-btn.active { background: #262626; color: #fff; }
-
-    .status {
-      display: flex; align-items: center; gap: 6px; font-size: 10px; color: #525252;
-      margin-left: auto; flex-shrink: 0;
-    }
-    .status .dot {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: #10b981; box-shadow: 0 0 6px #10b981;
-      animation: pulse 2s ease-in-out infinite;
-    }
+    .status { display: flex; align-items: center; gap: 6px; font-size: 10px; color: #525252; margin-left: auto; flex-shrink: 0; }
+    .status .dot { width: 6px; height: 6px; border-radius: 50%; background: #10b981; box-shadow: 0 0 6px #10b981; animation: pulse 2s ease-in-out infinite; }
     .status code { color: #a3a3a3; font-size: 10px; }
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-    .main { flex: 1; position: relative; overflow: hidden; }
-
-    .empty {
-      position: absolute; inset: 0;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      color: #333; text-align: center; gap: 8px;
-    }
-    .empty svg { color: #262626; margin-bottom: 8px; }
-    .empty p { font-size: 14px; color: #525252; }
-    .empty small { font-size: 12px; }
-
-    /* IDs display bar */
     .ids-bar {
-      display: none;
-      background: #0c0c0c;
-      border-top: 1px solid #1a1a1a;
-      padding: 8px 16px;
-      gap: 16px;
-      align-items: center;
-      flex-shrink: 0;
-      flex-wrap: wrap;
+      display: none; background: #0c0c0c; border-top: 1px solid #1a1a1a;
+      padding: 6px 16px; gap: 12px; align-items: center; flex-shrink: 0; flex-wrap: wrap;
     }
     .ids-bar.visible { display: flex; }
-    .id-chip {
-      display: flex; align-items: center; gap: 6px; font-size: 11px;
-      cursor: pointer; padding: 4px 8px; border-radius: 4px;
-      transition: background 0.15s;
-    }
+    .id-chip { display: flex; align-items: center; gap: 6px; font-size: 11px; cursor: pointer; padding: 3px 6px; border-radius: 4px; transition: background 0.15s; }
     .id-chip:hover { background: #1a1a1a; }
     .id-chip-label { color: #525252; font-weight: 600; text-transform: uppercase; font-size: 9px; letter-spacing: 0.05em; }
     .id-chip-value { color: #a3a3a3; font-family: "SF Mono", Monaco, monospace; font-size: 11px; }
     .id-chip-value.waiting { color: #404040; font-style: italic; font-family: inherit; }
-    .id-chip .copy-icon { color: #404040; flex-shrink: 0; }
     .id-chip.copied .id-chip-value { color: #10b981; }
-    .id-chip.copied .copy-icon { color: #10b981; }
-
-    .ids-bar .sep { height: 20px; }
-
-    .link-btn {
-      padding: 4px 10px; border-radius: 4px; font-size: 10px; font-weight: 600;
-      text-decoration: none; display: inline-flex; align-items: center; gap: 4px;
-      transition: opacity 0.15s; border: none; cursor: pointer; font-family: inherit;
-    }
-    .link-btn:hover { opacity: 0.85; }
-    .link-btn.disabled { opacity: 0.3; cursor: not-allowed; pointer-events: none; }
+    .link-btn { padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; border: none; cursor: pointer; font-family: inherit; }
+    .link-btn.disabled { opacity: 0.3; pointer-events: none; }
     .link-portkey { background: #fff; color: #0c0c0c; }
     .link-kibana { background: #f472b6; color: #0c0c0c; }
 
-    /* Feedback fab */
-    .fab {
-      position: fixed; bottom: 20px; left: 20px; z-index: 9999;
-      width: 42px; height: 42px; border-radius: 50%;
-      background: #f472b6; color: #0c0c0c; border: none; cursor: pointer;
-      display: none; align-items: center; justify-content: center;
-      box-shadow: 0 4px 12px rgba(244, 114, 182, 0.3); transition: transform 0.15s;
-    }
-    .fab:hover { transform: scale(1.08); }
+    .main { flex: 1; position: relative; overflow: hidden; }
+    .empty { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #333; text-align: center; gap: 8px; }
+    .empty svg { color: #262626; margin-bottom: 8px; }
+    .empty p { font-size: 14px; color: #525252; }
+    .empty small { font-size: 12px; }
 
-    /* Feedback panel */
-    .fb-panel {
-      position: fixed; bottom: 72px; left: 20px; z-index: 9999;
-      width: 380px; background: #0c0c0c; border: 1px solid #262626;
-      border-radius: 12px; padding: 16px;
-      display: none; flex-direction: column; gap: 10px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
-    }
+    .fab { position: fixed; bottom: 20px; left: 20px; z-index: 9999; width: 42px; height: 42px; border-radius: 50%; background: #f472b6; color: #0c0c0c; border: none; cursor: pointer; display: none; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(244,114,182,0.3); transition: transform 0.15s; }
+    .fab:hover { transform: scale(1.08); }
+    .fb-panel { position: fixed; bottom: 72px; left: 20px; z-index: 9999; width: 380px; background: #0c0c0c; border: 1px solid #262626; border-radius: 12px; padding: 16px; display: none; flex-direction: column; gap: 10px; box-shadow: 0 8px 32px rgba(0,0,0,0.6); }
     .fb-panel.open { display: flex; }
     .fb-title { font-size: 13px; font-weight: 600; color: #fff; display: flex; align-items: center; gap: 6px; }
     .fb-meta { font-size: 11px; color: #525252; line-height: 1.6; }
     .fb-meta code { color: #a3a3a3; background: #1a1a1a; padding: 1px 5px; border-radius: 3px; font-size: 10px; }
-    .fb-textarea {
-      width: 100%; min-height: 80px; padding: 10px;
-      background: #141414; border: 1px solid #262626; border-radius: 8px;
-      color: #e5e5e5; font-size: 12px; font-family: inherit;
-      line-height: 1.5; resize: vertical; outline: none;
-    }
+    .fb-textarea { width: 100%; min-height: 80px; padding: 10px; background: #141414; border: 1px solid #262626; border-radius: 8px; color: #e5e5e5; font-size: 12px; font-family: inherit; line-height: 1.5; resize: vertical; outline: none; }
     .fb-textarea:focus { border-color: #f472b6; }
     .fb-textarea::placeholder { color: #404040; }
     .fb-actions { display: flex; gap: 8px; justify-content: flex-end; }
@@ -160,13 +93,7 @@
     .btn-slack:hover { background: #e5e5e5; }
     .btn-slack.sent { background: #10b981; color: #fff; }
     .btn-slack.error { background: #ef4444; color: #fff; }
-
-    .toast {
-      position: fixed; top: 52px; right: 16px;
-      padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: 500;
-      z-index: 10000; opacity: 0; transform: translateY(-8px);
-      transition: all 0.3s ease; pointer-events: none;
-    }
+    .toast { position: fixed; top: 52px; right: 16px; padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: 500; z-index: 10000; opacity: 0; transform: translateY(-8px); transition: all 0.3s ease; pointer-events: none; }
     .toast.show { opacity: 1; transform: translateY(0); }
     .toast.success { background: #10b981; color: #fff; }
     .toast.error { background: #ef4444; color: #fff; }
@@ -174,49 +101,34 @@
   </style>
 </head>
 <body>
-
   <div id="toast" class="toast"></div>
 
   <div class="toolbar">
     <div class="toolbar-brand">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-      </svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
       <div class="toolbar-brand-text">Docket <span>Tester</span></div>
     </div>
     <div class="sep"></div>
-    <select id="agentSelect">
-      <option value="">-- Saved agents --</option>
-    </select>
+    <select id="agentSelect"><option value="">-- Saved agents --</option></select>
     <input type="text" id="agentInput" class="text-input" placeholder="Paste agent_id...">
     <button class="btn btn-go" onclick="loadAgent()">Load</button>
-    <button class="btn btn-reset" id="resetBtn" onclick="resetChat()" style="display:none">Reset</button>
+    <button class="btn btn-reset" id="resetBtn" onclick="resetChat()" style="display:none">Reset Chat</button>
     <div class="sep"></div>
     <div class="env-toggle">
       <button class="env-btn active" data-env="app" onclick="switchEnv('app')">App</button>
       <button class="env-btn" data-env="dev" onclick="switchEnv('dev')">Dev</button>
     </div>
-    <div class="status" id="statusPill" style="display:none">
-      <div class="dot"></div>
-      <code id="statusAgentId"></code>
-    </div>
+    <div class="status" id="statusPill" style="display:none"><div class="dot"></div><code id="statusAgentId"></code></div>
   </div>
 
-  <!-- IDs bar: shows detected conversation/visitor IDs + Portkey/Kibana links -->
   <div class="ids-bar" id="idsBar">
     <div class="id-chip" id="convChip" onclick="copyId('conv')" title="Click to copy">
       <span class="id-chip-label">Conv</span>
-      <span class="id-chip-value waiting" id="convValue">waiting...</span>
-      <svg class="copy-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-        <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-      </svg>
+      <span class="id-chip-value waiting" id="convValue">waiting for chat...</span>
     </div>
     <div class="id-chip" id="visChip" onclick="copyId('vis')" title="Click to copy">
       <span class="id-chip-label">Visitor</span>
       <span class="id-chip-value waiting" id="visValue">waiting...</span>
-      <svg class="copy-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-        <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-      </svg>
     </div>
     <div class="sep"></div>
     <a class="link-btn link-portkey disabled" id="portkeyLink" target="_blank">Portkey</a>
@@ -225,43 +137,76 @@
 
   <div class="main" id="main">
     <div class="empty" id="emptyState">
-      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-      </svg>
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
       <p>Select an agent and click <strong>Load</strong></p>
       <small>The Docket chat widget will appear on this page</small>
     </div>
   </div>
 
-  <!-- Feedback fab -->
   <button class="fab" id="fab" onclick="toggleFeedback()" title="Send feedback to Slack">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
-    </svg>
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
   </button>
 
-  <!-- Feedback panel -->
   <div class="fb-panel" id="fbPanel">
     <div class="fb-title">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
-      </svg>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
       Send Feedback to Slack
     </div>
     <div class="fb-meta" id="fbMeta"></div>
     <textarea id="fbText" class="fb-textarea" placeholder="Describe the issue or feedback..."></textarea>
     <div class="fb-actions">
       <button class="btn btn-cancel" onclick="toggleFeedback()">Cancel</button>
-      <button id="slackBtn" class="btn btn-slack" onclick="sendToSlack()">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
-        </svg>
-        Send to Slack
-      </button>
+      <button id="slackBtn" class="btn btn-slack" onclick="sendToSlack()">Send to Slack</button>
     </div>
   </div>
 
-  <!-- SCRIPT 1: Set AISellerSettings from URL (runs before widget) -->
+  <!--
+    SCRIPT 1: Intercept fetch calls to Docket API and proxy them
+    through our serverless function. This MUST run before the widget.
+    Also captures conversation_id and visitor_id from responses.
+  -->
+  <script>
+    (function() {
+      var _origFetch = window.fetch;
+      window.__docketIds = { convId: null, visitorId: null };
+
+      window.fetch = function(input, init) {
+        var url = typeof input === 'string' ? input : (input && input.url ? input.url : '');
+
+        if (/manthan\.(dev|app)\.docketai\.com/.test(url)) {
+          var proxyBody = {
+            url: url,
+            method: (init && init.method) || 'GET',
+          };
+
+          if (init && init.body) {
+            try { proxyBody.body = JSON.parse(init.body); } catch(e) { proxyBody.body = init.body; }
+          }
+
+          return _origFetch('/api/proxy', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(proxyBody),
+          }).then(function(resp) {
+            var cloned = resp.clone();
+            cloned.json().then(function(json) {
+              if (json) {
+                var vid = (json.data && json.data.visitor && json.data.visitor.id) || json.visitor_id;
+                var cid = (json.data && json.data.conversation_id) || json.conversation_id;
+                if (vid) window.__docketIds.visitorId = vid;
+                if (cid) window.__docketIds.convId = cid;
+              }
+            }).catch(function(){});
+            return resp;
+          });
+        }
+
+        return _origFetch.apply(this, arguments);
+      };
+    })();
+  </script>
+
+  <!-- SCRIPT 2: Set AISellerSettings from URL -->
   <script>
     (function() {
       var agentId = new URLSearchParams(window.location.search).get('agent');
@@ -271,50 +216,34 @@
     })();
   </script>
 
-  <!-- SCRIPT 2: Docket widget snippet (only if agent selected) -->
+  <!-- SCRIPT 3: Docket widget snippet (only if agent selected) -->
   <script>
     if (window.AISellerSettings) {
       (function () {
-        var w = window;
-        var ew = w.AISeller;
-        if (typeof ew === 'function') {
-          ew('update', w.AISellerSettings);
-        } else {
-          var d = document;
-          var i = function () { i.q.push(arguments); };
-          i.q = [];
-          i.q.push(['update', w.AISellerSettings]);
-          w.AISeller = i;
+        var w = window, ew = w.AISeller;
+        if (typeof ew === 'function') { ew('update', w.AISellerSettings); } else {
+          var d = document, i = function () { i.q.push(arguments); };
+          i.q = []; i.q.push(['update', w.AISellerSettings]); w.AISeller = i;
           var l = function () {
-            var s = d.createElement('script');
-            s.type = 'text/javascript';
-            s.async = true;
+            var s = d.createElement('script'); s.type = 'text/javascript'; s.async = true;
             s.src = 'https://d33t2173eag6fx.cloudfront.net/script/dev/inbound-se-script/ai-seller.js';
-            var x = d.getElementsByTagName('script')[0];
-            x.parentNode.insertBefore(s, x);
+            var x = d.getElementsByTagName('script')[0]; x.parentNode.insertBefore(s, x);
           };
-          if (document.readyState === 'complete') {
-            l();
-          } else if (w.attachEvent) {
-            w.attachEvent('onload', l);
-          } else {
-            w.addEventListener('load', l, false);
-          }
+          if (document.readyState === 'complete') l();
+          else if (w.attachEvent) w.attachEvent('onload', l);
+          else w.addEventListener('load', l, false);
         }
       })();
     }
   </script>
 
-  <!-- SCRIPT 3: App logic -->
+  <!-- SCRIPT 4: App logic -->
   <script>
     var SAVED_AGENTS = [
       { name: 'Default Test Agent', id: '1b81b9ed-ce6a-4b73-9f71-94cc0a9c4ab0' },
     ];
     var SLACK_API_PATH = '/api/slack';
-    var PORTKEY_ORG_IDS = {
-      app: '0501e7ad-fe7d-4304-a2b3-9d3a73176fcf',
-      dev: 'd89a67c9-a650-4107-bad4-c3d3cd7641cb',
-    };
+    var PORTKEY_ORG_IDS = { app: '0501e7ad-fe7d-4304-a2b3-9d3a73176fcf', dev: 'd89a67c9-a650-4107-bad4-c3d3cd7641cb' };
     var KIBANA_CONFIG = {
       dev: { baseUrl: 'https://logging.dev.docketai.com', dataViewId: '49b05873-fec8-43d1-a5b7-222746f7aa66' },
       app: { baseUrl: 'https://logging.app.docketai.com', dataViewId: 'fec2389e-a11f-483b-8522-7f6491a7109c' },
@@ -326,7 +255,6 @@
     var detectedConvId = null;
     var detectedVisitorId = null;
 
-    // ─── Init ────────────────────────────────────────────────────────
     (function init() {
       var select = document.getElementById('agentSelect');
       SAVED_AGENTS.forEach(function(a) {
@@ -338,11 +266,9 @@
       select.addEventListener('change', function() {
         if (select.value) document.getElementById('agentInput').value = select.value;
       });
-
       document.querySelectorAll('.env-btn').forEach(function(b) {
         b.classList.toggle('active', b.dataset.env === currentEnv);
       });
-
       if (currentAgentId) {
         document.getElementById('agentInput').value = currentAgentId;
         var match = SAVED_AGENTS.find(function(a) { return a.id === currentAgentId; });
@@ -357,7 +283,6 @@
       }
     })();
 
-    // ─── Load Agent ──────────────────────────────────────────────────
     function loadAgent() {
       var agentId = document.getElementById('agentInput').value.trim() || document.getElementById('agentSelect').value;
       if (!agentId) { toast('Please select or enter an agent ID', 'error'); return; }
@@ -368,19 +293,15 @@
       window.location.href = url.toString();
     }
 
-    // ─── Reset Chat ──────────────────────────────────────────────────
     function resetChat() {
       if (!currentAgentId) return;
       localStorage.clear();
       window.location.reload();
     }
 
-    // ─── Environment toggle ──────────────────────────────────────────
     function switchEnv(env) {
       currentEnv = env;
-      document.querySelectorAll('.env-btn').forEach(function(b) {
-        b.classList.toggle('active', b.dataset.env === env);
-      });
+      document.querySelectorAll('.env-btn').forEach(function(b) { b.classList.toggle('active', b.dataset.env === env); });
       var url = new URL(window.location.href);
       url.searchParams.set('env', env);
       history.replaceState(null, '', url.toString());
@@ -388,24 +309,27 @@
       toast('Environment: ' + env.toUpperCase(), 'info');
     }
 
-    // ─── Poll localStorage for conversation/visitor IDs ──────────────
     function startPolling() {
-      pollLocalStorage();
-      setInterval(pollLocalStorage, 2000);
+      poll();
+      setInterval(poll, 2000);
     }
 
-    function pollLocalStorage() {
-      var data = extractFromLocalStorage();
-      if (data.conversationId && data.conversationId !== detectedConvId) {
-        detectedConvId = data.conversationId;
+    function poll() {
+      var ids = window.__docketIds || {};
+      var lsData = extractFromLocalStorage();
+      var cid = ids.convId || lsData.conversationId;
+      var vid = ids.visitorId || lsData.visitorId;
+
+      if (cid && cid !== detectedConvId) {
+        detectedConvId = cid;
         var el = document.getElementById('convValue');
-        el.textContent = detectedConvId;
+        el.textContent = cid;
         el.classList.remove('waiting');
       }
-      if (data.visitorId && data.visitorId !== detectedVisitorId) {
-        detectedVisitorId = data.visitorId;
+      if (vid && vid !== detectedVisitorId) {
+        detectedVisitorId = vid;
         var el = document.getElementById('visValue');
-        el.textContent = detectedVisitorId;
+        el.textContent = vid;
         el.classList.remove('waiting');
       }
       updateLinks();
@@ -431,24 +355,17 @@
       return result;
     }
 
-    // ─── Update Portkey/Kibana links ─────────────────────────────────
     function updateLinks() {
-      var pkEl = document.getElementById('portkeyLink');
-      var kbEl = document.getElementById('kibanaLink');
+      var pk = document.getElementById('portkeyLink');
+      var kb = document.getElementById('kibanaLink');
       if (detectedConvId) {
-        pkEl.href = buildPortkeyUrl(detectedConvId);
-        pkEl.classList.remove('disabled');
-        kbEl.href = buildKibanaUrl(detectedConvId);
-        kbEl.classList.remove('disabled');
-      } else {
-        pkEl.classList.add('disabled');
-        kbEl.classList.add('disabled');
-      }
+        pk.href = buildPortkeyUrl(detectedConvId); pk.classList.remove('disabled');
+        kb.href = buildKibanaUrl(detectedConvId); kb.classList.remove('disabled');
+      } else { pk.classList.add('disabled'); kb.classList.add('disabled'); }
     }
 
     function buildPortkeyUrl(cid) {
-      var orgId = PORTKEY_ORG_IDS[currentEnv];
-      var now = new Date();
+      var orgId = PORTKEY_ORG_IDS[currentEnv]; var now = new Date();
       var dr = JSON.stringify({ startDate: new Date(now.getTime() - 30*86400000).toISOString(), endDate: now.toISOString(), placeHolder: 'Last 30 days' });
       return 'https://app.portkey.ai/organisation/' + orgId + '/logs?traceView=true&dateRange=' + encodeURIComponent(dr) + '&traceId=' + cid + '&selectedTraceId=' + cid;
     }
@@ -461,7 +378,6 @@
       return c.baseUrl + '/app/discover#/?_g=' + g + '&_a=' + a;
     }
 
-    // ─── Copy IDs ────────────────────────────────────────────────────
     function copyId(type) {
       var val = type === 'conv' ? detectedConvId : detectedVisitorId;
       if (!val) return;
@@ -472,14 +388,10 @@
       toast('Copied!', 'success');
     }
 
-    // ─── Feedback ────────────────────────────────────────────────────
     function toggleFeedback() {
       var panel = document.getElementById('fbPanel');
       var isOpen = panel.classList.toggle('open');
-      if (isOpen) {
-        updateFeedbackMeta();
-        document.getElementById('fbText').focus();
-      }
+      if (isOpen) { updateFeedbackMeta(); document.getElementById('fbText').focus(); }
     }
 
     function updateFeedbackMeta() {
@@ -491,7 +403,6 @@
       document.getElementById('fbMeta').innerHTML = html;
     }
 
-    // ─── Send to Slack ───────────────────────────────────────────────
     async function sendToSlack() {
       var btn = document.getElementById('slackBtn');
       var textarea = document.getElementById('fbText');
@@ -501,64 +412,44 @@
 
       var now = new Date();
       var label = (SAVED_AGENTS.find(function(a) { return a.id === currentAgentId; }) || {}).name || 'Custom';
-
       var blocks = [
         { type: 'header', text: { type: 'plain_text', text: 'Agent Test Feedback', emoji: true } },
         { type: 'section', fields: [
-            { type: 'mrkdwn', text: '*Conversation ID:*\n`' + (detectedConvId || 'N/A') + '`' },
-            { type: 'mrkdwn', text: '*Visitor ID:*\n`' + (detectedVisitorId || 'N/A') + '`' },
-            { type: 'mrkdwn', text: '*Environment:*\n' + currentEnv.toUpperCase() },
-            { type: 'mrkdwn', text: '*Time:*\n' + now.toLocaleString() },
+          { type: 'mrkdwn', text: '*Conversation ID:*\n`' + (detectedConvId || 'N/A') + '`' },
+          { type: 'mrkdwn', text: '*Visitor ID:*\n`' + (detectedVisitorId || 'N/A') + '`' },
+          { type: 'mrkdwn', text: '*Environment:*\n' + currentEnv.toUpperCase() },
+          { type: 'mrkdwn', text: '*Time:*\n' + now.toLocaleString() },
         ]},
         { type: 'section', fields: [
-            { type: 'mrkdwn', text: '*Agent:*\n' + label + '\n`' + currentAgentId + '`' },
-            { type: 'mrkdwn', text: '*Standalone:*\n<https://aiseller.dev.docketai.com/' + currentAgentId + '|Open Agent>' },
+          { type: 'mrkdwn', text: '*Agent:*\n' + label + '\n`' + currentAgentId + '`' },
+          { type: 'mrkdwn', text: '*Standalone:*\n<https://aiseller.dev.docketai.com/' + currentAgentId + '|Open Agent>' },
         ]},
         { type: 'section', text: { type: 'mrkdwn', text: '*Comment:*\n' + comment } },
       ];
-
       if (detectedConvId) {
-        var pkUrl = buildPortkeyUrl(detectedConvId);
-        var kbUrl = buildKibanaUrl(detectedConvId);
         blocks.push({ type: 'actions', elements: [
-          { type: 'button', text: { type: 'plain_text', text: 'Portkey Logs' }, url: pkUrl },
-          { type: 'button', text: { type: 'plain_text', text: 'Kibana Logs' }, url: kbUrl },
+          { type: 'button', text: { type: 'plain_text', text: 'Portkey Logs' }, url: buildPortkeyUrl(detectedConvId) },
+          { type: 'button', text: { type: 'plain_text', text: 'Kibana Logs' }, url: buildKibanaUrl(detectedConvId) },
         ]});
       }
-
       blocks.push({ type: 'context', elements: [{ type: 'mrkdwn', text: 'Sent from Docket Agent Tester' }] });
 
-      btn.disabled = true;
-      btn.textContent = 'Sending...';
-
+      btn.disabled = true; btn.textContent = 'Sending...';
       try {
-        var resp = await fetch(SLACK_API_PATH, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ blocks: blocks }),
-        });
+        var resp = await fetch(SLACK_API_PATH, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ blocks: blocks }) });
         var result = await resp.json();
         if (!resp.ok) throw new Error(result.error || 'Status ' + resp.status);
-        btn.classList.add('sent');
-        btn.textContent = 'Sent!';
-        textarea.value = '';
+        btn.classList.add('sent'); btn.textContent = 'Sent!'; textarea.value = '';
         toast('Feedback sent to Slack', 'success');
       } catch (err) {
-        btn.classList.add('error');
-        btn.textContent = 'Failed';
+        btn.classList.add('error'); btn.textContent = 'Failed';
         toast('Failed: ' + err.message, 'error');
       }
-
-      setTimeout(function() {
-        btn.classList.remove('sent', 'error');
-        btn.disabled = false;
-        btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Send to Slack';
-      }, 2500);
+      setTimeout(function() { btn.classList.remove('sent', 'error'); btn.disabled = false; btn.textContent = 'Send to Slack'; }, 2500);
     }
 
     function toast(msg, type) {
-      var t = document.getElementById('toast');
-      t.textContent = msg;
+      var t = document.getElementById('toast'); t.textContent = msg;
       t.className = 'toast ' + type + ' show';
       setTimeout(function() { t.classList.remove('show'); }, 2500);
     }
