@@ -112,6 +112,7 @@
     <select id="agentSelect"><option value="">-- Saved agents --</option></select>
     <input type="text" id="agentInput" class="text-input" placeholder="Paste agent_id...">
     <button class="btn btn-go" onclick="loadAgent()">Load</button>
+    <button class="btn btn-go" style="background:#262626;color:#e5e5e5" onclick="openStandalone()" title="Open in Docket's hosted page (no whitelisting needed)">Standalone</button>
     <button class="btn btn-reset" id="resetBtn" onclick="resetChat()" style="display:none">Reset Chat</button>
     <div class="sep"></div>
     <div class="env-toggle">
@@ -285,6 +286,13 @@
       url.searchParams.set('agent', agentId);
       url.searchParams.set('env', currentEnv);
       window.location.href = url.toString();
+    }
+
+    function openStandalone() {
+      var agentId = document.getElementById('agentInput').value.trim() || document.getElementById('agentSelect').value || currentAgentId;
+      if (!agentId) { toast('Please select or enter an agent ID', 'error'); return; }
+      var env = currentEnv === 'app' ? 'app' : 'dev';
+      window.open('https://aiseller.' + env + '.docketai.com/' + agentId + '/', '_blank');
     }
 
     function resetChat() {
