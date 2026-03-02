@@ -1,31 +1,38 @@
 module.exports = async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') return res.status(200).end();
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+
+  var parsed = req.body;
+  if (!parsed || typeof parsed === 'string') {
+    try { parsed = JSON.parse(parsed || '{}'); } catch(e) { parsed = {}; }
   }
 
-  var { url, method, headers, body } = req.body;
+  var targetUrl = parsed.url;
+  var targetMethod = parsed.method || 'POST';
+  var targetBody = parsed.body;
 
-  if (!url || !/^https:\/\/manthan\.(dev|app)\.docketai\.com\//.test(url)) {
-    return res.status(403).json({ error: 'Forbidden target' });
+  if (!targetUrl || !/^https:\/\/manthan\.(dev|app)\.docketai\.com\//.test(targetUrl)) {
+    return res.status(400).json({ error: 'Invalid target URL', received: typeof targetUrl, body_type: typeof req.body });
   }
 
   try {
-    var fetchHeaders = { 'Content-Type': 'application/json' };
-    if (headers) {
-      Object.keys(headers).forEach(function(k) {
-        if (!/^(origin|referer|host|cookie)$/i.test(k)) fetchHeaders[k] = headers[k];
-      });
+    var fetchOpts = {
+      method: targetMethod,
+      headers: { 'Content-Type': 'application/json' },
+    };
+    if (targetBody) {
+      fetchOpts.body = typeof targetBody === 'string' ? targetBody : JSON.stringify(targetBody);
     }
 
-    var fetchOpts = { method: method || 'POST', headers: fetchHeaders };
-    if (body) fetchOpts.body = typeof body === 'string' ? body : JSON.stringify(body);
-
-    var response = await fetch(url, fetchOpts);
+    var response = await fetch(targetUrl, fetchOpts);
     var text = await response.text();
 
-    res.setHeader('Access-Control-Allow-Origin', '*');
     res.status(response.status);
-    res.setHeader('Content-Type', response.headers.get('content-type') || 'text/plain');
+    res.setHeader('Content-Type', response.headers.get('content-type') || 'application/json');
     res.send(text);
   } catch (err) {
     res.status(500).json({ error: err.message });

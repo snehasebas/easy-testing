@@ -170,35 +170,40 @@
       var _origFetch = window.fetch;
       window.__docketIds = { convId: null, visitorId: null };
 
+      function xhrProxy(proxyBody) {
+        return new Promise(function(resolve, reject) {
+          var xhr = new XMLHttpRequest();
+          xhr.open('POST', '/api/proxy', true);
+          xhr.setRequestHeader('Content-Type', 'application/json');
+          xhr.onload = function() {
+            var responseText = xhr.responseText;
+            try {
+              var json = JSON.parse(responseText);
+              var vid = (json.data && json.data.visitor && json.data.visitor.id) || json.visitor_id;
+              var cid = (json.data && json.data.conversation_id) || json.conversation_id;
+              if (vid) window.__docketIds.visitorId = vid;
+              if (cid) window.__docketIds.convId = cid;
+            } catch(e) {}
+            resolve(new Response(responseText, {
+              status: xhr.status,
+              statusText: xhr.statusText,
+              headers: { 'Content-Type': xhr.getResponseHeader('Content-Type') || 'application/json' }
+            }));
+          };
+          xhr.onerror = function() { reject(new TypeError('Network request failed')); };
+          xhr.send(JSON.stringify(proxyBody));
+        });
+      }
+
       window.fetch = function(input, init) {
         var url = typeof input === 'string' ? input : (input && input.url ? input.url : '');
 
         if (/manthan\.(dev|app)\.docketai\.com/.test(url)) {
-          var proxyBody = {
-            url: url,
-            method: (init && init.method) || 'GET',
-          };
-
+          var proxyBody = { url: url, method: (init && init.method) || 'GET' };
           if (init && init.body) {
             try { proxyBody.body = JSON.parse(init.body); } catch(e) { proxyBody.body = init.body; }
           }
-
-          return _origFetch('/api/proxy', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(proxyBody),
-          }).then(function(resp) {
-            var cloned = resp.clone();
-            cloned.json().then(function(json) {
-              if (json) {
-                var vid = (json.data && json.data.visitor && json.data.visitor.id) || json.visitor_id;
-                var cid = (json.data && json.data.conversation_id) || json.conversation_id;
-                if (vid) window.__docketIds.visitorId = vid;
-                if (cid) window.__docketIds.convId = cid;
-              }
-            }).catch(function(){});
-            return resp;
-          });
+          return xhrProxy(proxyBody);
         }
 
         return _origFetch.apply(this, arguments);
