@@ -160,86 +160,75 @@
     </div>
   </div>
 
-  <!--
-    SCRIPT 1: Intercept fetch calls to Docket API and proxy them
-    through our serverless function. This MUST run before the widget.
-    Also captures conversation_id and visitor_id from responses.
-  -->
+  <!-- SCRIPT 1: Passive fetch observer — captures IDs from Docket API responses (same pattern as Dext-Debugger extension's intercept.ts) -->
   <script>
     (function() {
       var _origFetch = window.fetch;
       window.__docketIds = { convId: null, visitorId: null };
 
-      function xhrProxy(proxyBody) {
-        return new Promise(function(resolve, reject) {
-          var xhr = new XMLHttpRequest();
-          xhr.open('POST', '/api/proxy', true);
-          xhr.setRequestHeader('Content-Type', 'application/json');
-          xhr.onload = function() {
-            var responseText = xhr.responseText;
-            try {
-              var json = JSON.parse(responseText);
-              var vid = (json.data && json.data.visitor && json.data.visitor.id) || json.visitor_id;
-              var cid = (json.data && json.data.conversation_id) || json.conversation_id;
-              if (vid) window.__docketIds.visitorId = vid;
-              if (cid) window.__docketIds.convId = cid;
-            } catch(e) {}
-            resolve(new Response(responseText, {
-              status: xhr.status,
-              statusText: xhr.statusText,
-              headers: { 'Content-Type': xhr.getResponseHeader('Content-Type') || 'application/json' }
-            }));
-          };
-          xhr.onerror = function() { reject(new TypeError('Network request failed')); };
-          xhr.send(JSON.stringify(proxyBody));
-        });
-      }
+      window.fetch = function() {
+        var args = arguments;
+        var responsePromise = _origFetch.apply(this, args);
 
-      window.fetch = function(input, init) {
-        var url = typeof input === 'string' ? input : (input && input.url ? input.url : '');
+        var url = typeof args[0] === 'string' ? args[0] : (args[0] && args[0].url ? args[0].url : '');
+        if (url.indexOf('docketai.com') === -1) return responsePromise;
 
-        if (/manthan\.(dev|app)\.docketai\.com/.test(url)) {
-          var proxyBody = { url: url, method: (init && init.method) || 'GET' };
-          if (init && init.body) {
-            try { proxyBody.body = JSON.parse(init.body); } catch(e) { proxyBody.body = init.body; }
+        responsePromise.then(function(resp) {
+          if (url.indexOf('/init') !== -1 || url.indexOf('/conversations') !== -1) {
+            resp.clone().json().then(function(data) {
+              if (url.indexOf('/init') !== -1) {
+                var vid = (data.data && data.data.visitor && data.data.visitor.id) || (data.visitor && data.visitor.id);
+                if (vid) window.__docketIds.visitorId = vid;
+              }
+              if (url.indexOf('/conversations') !== -1) {
+                var cid = (data.data && data.data.conversation_id) || data.conversation_id;
+                if (cid) window.__docketIds.convId = cid;
+              }
+            }).catch(function(){});
           }
-          return xhrProxy(proxyBody);
-        }
+        }).catch(function(){});
 
-        return _origFetch.apply(this, arguments);
+        return responsePromise;
       };
     })();
   </script>
 
-  <!-- SCRIPT 2: Set AISellerSettings from URL -->
+  <!-- SCRIPT 2+3: Docket embed — always loads. Dynamic agent_id from URL, falls back to default. Loader code is verbatim from Docket settings. -->
   <script>
-    (function() {
-      var agentId = new URLSearchParams(window.location.search).get('agent');
-      if (agentId) {
-        window.AISellerSettings = { agent_id: agentId };
+    window.AISellerSettings = {
+      agent_id: new URLSearchParams(window.location.search).get('agent') || '1b81b9ed-ce6a-4b73-9f71-94cc0a9c4ab0',
+    };
+
+    (function () {
+      var w = window;
+      var ew = w.AISeller;
+      if (typeof ew === 'function') {
+        ew('update', w.AISellerSettings);
+      } else {
+        var d = document;
+        var i = function () {
+          i.q.push(arguments);
+        };
+        i.q = [];
+        i.q.push(['update', w.AISellerSettings]);
+        w.AISeller = i;
+        var l = function () {
+          var s = d.createElement('script');
+          s.type = 'text/javascript';
+          s.async = true;
+          s.src = 'https://d33t2173eag6fx.cloudfront.net/script/dev/inbound-se-script/ai-seller.js';
+          var x = d.getElementsByTagName('script')[0];
+          x.parentNode.insertBefore(s, x);
+        };
+        if (document.readyState === 'complete') {
+          l();
+        } else if (w.attachEvent) {
+          w.attachEvent('onload', l);
+        } else {
+          w.addEventListener('load', l, false);
+        }
       }
     })();
-  </script>
-
-  <!-- SCRIPT 3: Docket widget snippet (only if agent selected) -->
-  <script>
-    if (window.AISellerSettings) {
-      (function () {
-        var w = window, ew = w.AISeller;
-        if (typeof ew === 'function') { ew('update', w.AISellerSettings); } else {
-          var d = document, i = function () { i.q.push(arguments); };
-          i.q = []; i.q.push(['update', w.AISellerSettings]); w.AISeller = i;
-          var l = function () {
-            var s = d.createElement('script'); s.type = 'text/javascript'; s.async = true;
-            s.src = 'https://d33t2173eag6fx.cloudfront.net/script/dev/inbound-se-script/ai-seller.js';
-            var x = d.getElementsByTagName('script')[0]; x.parentNode.insertBefore(s, x);
-          };
-          if (document.readyState === 'complete') l();
-          else if (w.attachEvent) w.attachEvent('onload', l);
-          else w.addEventListener('load', l, false);
-        }
-      })();
-    }
   </script>
 
   <!-- SCRIPT 4: App logic -->
@@ -254,8 +243,9 @@
       app: { baseUrl: 'https://logging.app.docketai.com', dataViewId: 'fec2389e-a11f-483b-8522-7f6491a7109c' },
     };
 
+    var DEFAULT_AGENT_ID = '1b81b9ed-ce6a-4b73-9f71-94cc0a9c4ab0';
     var params = new URLSearchParams(window.location.search);
-    var currentAgentId = params.get('agent') || null;
+    var currentAgentId = params.get('agent') || DEFAULT_AGENT_ID;
     var currentEnv = params.get('env') || 'app';
     var detectedConvId = null;
     var detectedVisitorId = null;
@@ -274,18 +264,17 @@
       document.querySelectorAll('.env-btn').forEach(function(b) {
         b.classList.toggle('active', b.dataset.env === currentEnv);
       });
-      if (currentAgentId) {
-        document.getElementById('agentInput').value = currentAgentId;
-        var match = SAVED_AGENTS.find(function(a) { return a.id === currentAgentId; });
-        if (match) select.value = currentAgentId;
-        document.getElementById('emptyState').style.display = 'none';
-        document.getElementById('resetBtn').style.display = 'inline-flex';
-        document.getElementById('fab').style.display = 'flex';
-        document.getElementById('statusPill').style.display = 'flex';
-        document.getElementById('statusAgentId').textContent = currentAgentId;
-        document.getElementById('idsBar').classList.add('visible');
-        startPolling();
-      }
+
+      document.getElementById('agentInput').value = currentAgentId;
+      var match = SAVED_AGENTS.find(function(a) { return a.id === currentAgentId; });
+      if (match) select.value = currentAgentId;
+      document.getElementById('emptyState').style.display = 'none';
+      document.getElementById('resetBtn').style.display = 'inline-flex';
+      document.getElementById('fab').style.display = 'flex';
+      document.getElementById('statusPill').style.display = 'flex';
+      document.getElementById('statusAgentId').textContent = currentAgentId;
+      document.getElementById('idsBar').classList.add('visible');
+      startPolling();
     })();
 
     function loadAgent() {
@@ -417,11 +406,16 @@
 
       var now = new Date();
       var label = (SAVED_AGENTS.find(function(a) { return a.id === currentAgentId; }) || {}).name || 'Custom';
+      var convIdDisplay = detectedConvId || 'N/A';
+      var visIdDisplay = detectedVisitorId || 'N/A';
+      var portkeyUrl = detectedConvId ? buildPortkeyUrl(detectedConvId) : 'https://app.portkey.ai/';
+      var kibanaUrl = detectedConvId ? buildKibanaUrl(detectedConvId) : KIBANA_CONFIG[currentEnv].baseUrl;
+
       var blocks = [
         { type: 'header', text: { type: 'plain_text', text: 'Agent Test Feedback', emoji: true } },
         { type: 'section', fields: [
-          { type: 'mrkdwn', text: '*Conversation ID:*\n`' + (detectedConvId || 'N/A') + '`' },
-          { type: 'mrkdwn', text: '*Visitor ID:*\n`' + (detectedVisitorId || 'N/A') + '`' },
+          { type: 'mrkdwn', text: '*Conversation ID:*\n`' + convIdDisplay + '`' },
+          { type: 'mrkdwn', text: '*Visitor ID:*\n`' + visIdDisplay + '`' },
           { type: 'mrkdwn', text: '*Environment:*\n' + currentEnv.toUpperCase() },
           { type: 'mrkdwn', text: '*Time:*\n' + now.toLocaleString() },
         ]},
@@ -430,14 +424,12 @@
           { type: 'mrkdwn', text: '*Standalone:*\n<https://aiseller.dev.docketai.com/' + currentAgentId + '|Open Agent>' },
         ]},
         { type: 'section', text: { type: 'mrkdwn', text: '*Comment:*\n' + comment } },
+        { type: 'actions', elements: [
+          { type: 'button', text: { type: 'plain_text', text: 'Portkey Logs' }, url: portkeyUrl },
+          { type: 'button', text: { type: 'plain_text', text: 'Kibana Logs' }, url: kibanaUrl },
+        ]},
+        { type: 'context', elements: [{ type: 'mrkdwn', text: 'Sent from Docket Agent Tester' }] },
       ];
-      if (detectedConvId) {
-        blocks.push({ type: 'actions', elements: [
-          { type: 'button', text: { type: 'plain_text', text: 'Portkey Logs' }, url: buildPortkeyUrl(detectedConvId) },
-          { type: 'button', text: { type: 'plain_text', text: 'Kibana Logs' }, url: buildKibanaUrl(detectedConvId) },
-        ]});
-      }
-      blocks.push({ type: 'context', elements: [{ type: 'mrkdwn', text: 'Sent from Docket Agent Tester' }] });
 
       btn.disabled = true; btn.textContent = 'Sending...';
       try {
