@@ -356,8 +356,10 @@
 
       var iframe = document.createElement('iframe');
       iframe.id = 'agentFrame';
-      iframe.src = AGENT_BASE_URL + '/' + agentId;
-      iframe.allow = 'microphone; camera; autoplay';
+      iframe.src = AGENT_BASE_URL + '/' + agentId + '/';
+      iframe.loading = 'lazy';
+      iframe.allow = 'microphone';
+      iframe.allowFullscreen = true;
       document.getElementById('main').appendChild(iframe);
 
       var url = new URL(window.location.origin + window.location.pathname);
@@ -378,7 +380,7 @@
     function resetChat() {
       if (!currentAgentId) return;
       var iframe = document.getElementById('agentFrame');
-      if (iframe) iframe.src = AGENT_BASE_URL + '/' + currentAgentId + '?t=' + Date.now();
+      if (iframe) iframe.src = AGENT_BASE_URL + '/' + currentAgentId + '/?t=' + Date.now();
       toast('Chat reset — fresh session', 'success');
     }
 
