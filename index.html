@@ -26,93 +26,47 @@
       gap: 10px;
       flex-shrink: 0;
     }
-    .toolbar-brand {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-shrink: 0;
-    }
+    .toolbar-brand { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
     .toolbar-brand svg { color: #f472b6; width: 18px; height: 18px; }
     .toolbar-brand-text { font-size: 14px; font-weight: 700; color: #fff; }
     .toolbar-brand-text span { color: #f472b6; }
     .sep { width: 1px; height: 24px; background: #262626; flex-shrink: 0; }
 
     select, .text-input {
-      padding: 6px 10px;
-      background: #141414;
-      border: 1px solid #262626;
-      border-radius: 5px;
-      color: #e5e5e5;
-      font-size: 12px;
-      font-family: inherit;
-      outline: none;
+      padding: 6px 10px; background: #141414; border: 1px solid #262626;
+      border-radius: 5px; color: #e5e5e5; font-size: 12px; font-family: inherit; outline: none;
     }
     select {
-      padding-right: 26px;
-      cursor: pointer;
-      appearance: none;
+      padding-right: 26px; cursor: pointer; appearance: none;
       background-image: url("data:image/svg+xml,%3Csvg width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23525252' stroke-width='2' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 8px center;
+      background-repeat: no-repeat; background-position: right 8px center;
     }
     select option { background: #141414; color: #e5e5e5; }
-    .text-input {
-      font-family: "SF Mono", Monaco, "Courier New", monospace;
-      width: 260px;
-    }
+    .text-input { font-family: "SF Mono", Monaco, "Courier New", monospace; width: 260px; }
     select:focus, .text-input:focus { border-color: #f472b6; }
     .text-input::placeholder { color: #404040; }
 
     .btn {
-      padding: 6px 12px;
-      border: none;
-      border-radius: 5px;
-      font-size: 11px;
-      font-weight: 600;
-      cursor: pointer;
-      font-family: inherit;
-      transition: all 0.15s;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      white-space: nowrap;
+      padding: 6px 12px; border: none; border-radius: 5px; font-size: 11px; font-weight: 600;
+      cursor: pointer; font-family: inherit; transition: all 0.15s;
+      display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;
     }
     .btn-go { background: #f472b6; color: #0c0c0c; }
     .btn-go:hover { background: #f9a8d4; }
     .btn-reset { background: transparent; border: 1px solid #dc2626; color: #ef4444; }
     .btn-reset:hover { background: rgba(220, 38, 38, 0.1); }
 
-    .env-toggle {
-      display: flex;
-      background: #141414;
-      border-radius: 5px;
-      padding: 2px;
-      border: 1px solid #262626;
-    }
+    .env-toggle { display: flex; background: #141414; border-radius: 5px; padding: 2px; border: 1px solid #262626; }
     .env-btn {
-      padding: 4px 10px;
-      font-size: 10px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      background: transparent;
-      border: none;
-      border-radius: 3px;
-      color: #525252;
-      cursor: pointer;
-      font-family: inherit;
-      transition: all 0.15s;
+      padding: 4px 10px; font-size: 10px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.5px; background: transparent; border: none; border-radius: 3px;
+      color: #525252; cursor: pointer; font-family: inherit; transition: all 0.15s;
     }
     .env-btn.active { background: #262626; color: #fff; }
 
     .status {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 10px;
-      color: #525252;
-      margin-left: auto;
-      flex-shrink: 0;
+      display: flex; align-items: center; gap: 6px; font-size: 10px; color: #525252;
+      margin-left: auto; flex-shrink: 0;
     }
     .status .dot {
       width: 6px; height: 6px; border-radius: 50%;
@@ -122,85 +76,76 @@
     .status code { color: #a3a3a3; font-size: 10px; }
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-    .main {
-      flex: 1;
-      display: flex;
-      overflow: hidden;
-    }
-
-    .main iframe {
-      flex: 1;
-      border: none;
-      background: #111;
-    }
+    .main { flex: 1; position: relative; overflow: hidden; }
 
     .empty {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: #333;
-      text-align: center;
-      gap: 8px;
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      color: #333; text-align: center; gap: 8px;
     }
     .empty svg { color: #262626; margin-bottom: 8px; }
     .empty p { font-size: 14px; color: #525252; }
     .empty small { font-size: 12px; }
 
+    /* IDs display bar */
+    .ids-bar {
+      display: none;
+      background: #0c0c0c;
+      border-top: 1px solid #1a1a1a;
+      padding: 8px 16px;
+      gap: 16px;
+      align-items: center;
+      flex-shrink: 0;
+      flex-wrap: wrap;
+    }
+    .ids-bar.visible { display: flex; }
+    .id-chip {
+      display: flex; align-items: center; gap: 6px; font-size: 11px;
+      cursor: pointer; padding: 4px 8px; border-radius: 4px;
+      transition: background 0.15s;
+    }
+    .id-chip:hover { background: #1a1a1a; }
+    .id-chip-label { color: #525252; font-weight: 600; text-transform: uppercase; font-size: 9px; letter-spacing: 0.05em; }
+    .id-chip-value { color: #a3a3a3; font-family: "SF Mono", Monaco, monospace; font-size: 11px; }
+    .id-chip-value.waiting { color: #404040; font-style: italic; font-family: inherit; }
+    .id-chip .copy-icon { color: #404040; flex-shrink: 0; }
+    .id-chip.copied .id-chip-value { color: #10b981; }
+    .id-chip.copied .copy-icon { color: #10b981; }
+
+    .ids-bar .sep { height: 20px; }
+
+    .link-btn {
+      padding: 4px 10px; border-radius: 4px; font-size: 10px; font-weight: 600;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 4px;
+      transition: opacity 0.15s; border: none; cursor: pointer; font-family: inherit;
+    }
+    .link-btn:hover { opacity: 0.85; }
+    .link-btn.disabled { opacity: 0.3; cursor: not-allowed; pointer-events: none; }
+    .link-portkey { background: #fff; color: #0c0c0c; }
+    .link-kibana { background: #f472b6; color: #0c0c0c; }
+
     /* Feedback fab */
     .fab {
-      position: fixed;
-      bottom: 20px;
-      left: 20px;
-      z-index: 9999;
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      background: #f472b6;
-      color: #0c0c0c;
-      border: none;
-      cursor: pointer;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 12px rgba(244, 114, 182, 0.3);
-      transition: transform 0.15s;
+      position: fixed; bottom: 20px; left: 20px; z-index: 9999;
+      width: 42px; height: 42px; border-radius: 50%;
+      background: #f472b6; color: #0c0c0c; border: none; cursor: pointer;
+      display: none; align-items: center; justify-content: center;
+      box-shadow: 0 4px 12px rgba(244, 114, 182, 0.3); transition: transform 0.15s;
     }
     .fab:hover { transform: scale(1.08); }
 
     /* Feedback panel */
     .fb-panel {
-      position: fixed;
-      bottom: 72px;
-      left: 20px;
-      z-index: 9999;
-      width: 360px;
-      background: #0c0c0c;
-      border: 1px solid #262626;
-      border-radius: 12px;
-      padding: 16px;
-      display: none;
-      flex-direction: column;
-      gap: 10px;
+      position: fixed; bottom: 72px; left: 20px; z-index: 9999;
+      width: 380px; background: #0c0c0c; border: 1px solid #262626;
+      border-radius: 12px; padding: 16px;
+      display: none; flex-direction: column; gap: 10px;
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
     }
     .fb-panel.open { display: flex; }
     .fb-title { font-size: 13px; font-weight: 600; color: #fff; display: flex; align-items: center; gap: 6px; }
     .fb-meta { font-size: 11px; color: #525252; line-height: 1.6; }
     .fb-meta code { color: #a3a3a3; background: #1a1a1a; padding: 1px 5px; border-radius: 3px; font-size: 10px; }
-    .fb-id-row { display: flex; flex-direction: column; gap: 4px; }
-    .fb-id-label { font-size: 10px; font-weight: 600; letter-spacing: 0.05em; color: #525252; text-transform: uppercase; }
-    .fb-id-input {
-      width: 100%; padding: 8px 10px;
-      background: #141414; border: 1px solid #262626; border-radius: 6px;
-      color: #e5e5e5; font-size: 11px;
-      font-family: "SF Mono", Monaco, "Courier New", monospace;
-      outline: none;
-    }
-    .fb-id-input:focus { border-color: #f472b6; }
-    .fb-id-input::placeholder { color: #333; }
-    .fb-id-input.has-value { border-color: #10b981; background: rgba(16, 185, 129, 0.03); }
     .fb-textarea {
       width: 100%; min-height: 80px; padding: 10px;
       background: #141414; border: 1px solid #262626; border-radius: 8px;
@@ -216,7 +161,6 @@
     .btn-slack.sent { background: #10b981; color: #fff; }
     .btn-slack.error { background: #ef4444; color: #fff; }
 
-    /* Toast */
     .toast {
       position: fixed; top: 52px; right: 16px;
       padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: 500;
@@ -233,7 +177,6 @@
 
   <div id="toast" class="toast"></div>
 
-  <!-- ── Toolbar ── -->
   <div class="toolbar">
     <div class="toolbar-brand">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -241,48 +184,63 @@
       </svg>
       <div class="toolbar-brand-text">Docket <span>Tester</span></div>
     </div>
-
     <div class="sep"></div>
-
     <select id="agentSelect">
       <option value="">-- Saved agents --</option>
     </select>
     <input type="text" id="agentInput" class="text-input" placeholder="Paste agent_id...">
     <button class="btn btn-go" onclick="loadAgent()">Load</button>
     <button class="btn btn-reset" id="resetBtn" onclick="resetChat()" style="display:none">Reset</button>
-
     <div class="sep"></div>
-
     <div class="env-toggle">
       <button class="env-btn active" data-env="app" onclick="switchEnv('app')">App</button>
       <button class="env-btn" data-env="dev" onclick="switchEnv('dev')">Dev</button>
     </div>
-
     <div class="status" id="statusPill" style="display:none">
       <div class="dot"></div>
       <code id="statusAgentId"></code>
     </div>
   </div>
 
-  <!-- ── Main area: iframe or empty state ── -->
+  <!-- IDs bar: shows detected conversation/visitor IDs + Portkey/Kibana links -->
+  <div class="ids-bar" id="idsBar">
+    <div class="id-chip" id="convChip" onclick="copyId('conv')" title="Click to copy">
+      <span class="id-chip-label">Conv</span>
+      <span class="id-chip-value waiting" id="convValue">waiting...</span>
+      <svg class="copy-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+      </svg>
+    </div>
+    <div class="id-chip" id="visChip" onclick="copyId('vis')" title="Click to copy">
+      <span class="id-chip-label">Visitor</span>
+      <span class="id-chip-value waiting" id="visValue">waiting...</span>
+      <svg class="copy-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+      </svg>
+    </div>
+    <div class="sep"></div>
+    <a class="link-btn link-portkey disabled" id="portkeyLink" target="_blank">Portkey</a>
+    <a class="link-btn link-kibana disabled" id="kibanaLink" target="_blank">Kibana</a>
+  </div>
+
   <div class="main" id="main">
     <div class="empty" id="emptyState">
       <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
       </svg>
       <p>Select an agent and click <strong>Load</strong></p>
-      <small>The agent will load full-screen below the toolbar</small>
+      <small>The Docket chat widget will appear on this page</small>
     </div>
   </div>
 
-  <!-- ── Feedback fab ── -->
+  <!-- Feedback fab -->
   <button class="fab" id="fab" onclick="toggleFeedback()" title="Send feedback to Slack">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
       <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
     </svg>
   </button>
 
-  <!-- ── Feedback panel ── -->
+  <!-- Feedback panel -->
   <div class="fb-panel" id="fbPanel">
     <div class="fb-title">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -291,14 +249,6 @@
       Send Feedback to Slack
     </div>
     <div class="fb-meta" id="fbMeta"></div>
-    <div class="fb-id-row">
-      <label class="fb-id-label">Conversation ID</label>
-      <input type="text" id="fbConvId" class="fb-id-input" placeholder="Paste conversation_id from extension...">
-    </div>
-    <div class="fb-id-row">
-      <label class="fb-id-label">Visitor ID</label>
-      <input type="text" id="fbVisitorId" class="fb-id-input" placeholder="Paste visitor_id from extension...">
-    </div>
     <textarea id="fbText" class="fb-textarea" placeholder="Describe the issue or feedback..."></textarea>
     <div class="fb-actions">
       <button class="btn btn-cancel" onclick="toggleFeedback()">Cancel</button>
@@ -311,12 +261,55 @@
     </div>
   </div>
 
+  <!-- SCRIPT 1: Set AISellerSettings from URL (runs before widget) -->
   <script>
-    // ─── Config ──────────────────────────────────────────────────────
+    (function() {
+      var agentId = new URLSearchParams(window.location.search).get('agent');
+      if (agentId) {
+        window.AISellerSettings = { agent_id: agentId };
+      }
+    })();
+  </script>
+
+  <!-- SCRIPT 2: Docket widget snippet (only if agent selected) -->
+  <script>
+    if (window.AISellerSettings) {
+      (function () {
+        var w = window;
+        var ew = w.AISeller;
+        if (typeof ew === 'function') {
+          ew('update', w.AISellerSettings);
+        } else {
+          var d = document;
+          var i = function () { i.q.push(arguments); };
+          i.q = [];
+          i.q.push(['update', w.AISellerSettings]);
+          w.AISeller = i;
+          var l = function () {
+            var s = d.createElement('script');
+            s.type = 'text/javascript';
+            s.async = true;
+            s.src = 'https://d33t2173eag6fx.cloudfront.net/script/dev/inbound-se-script/ai-seller.js';
+            var x = d.getElementsByTagName('script')[0];
+            x.parentNode.insertBefore(s, x);
+          };
+          if (document.readyState === 'complete') {
+            l();
+          } else if (w.attachEvent) {
+            w.attachEvent('onload', l);
+          } else {
+            w.addEventListener('load', l, false);
+          }
+        }
+      })();
+    }
+  </script>
+
+  <!-- SCRIPT 3: App logic -->
+  <script>
     var SAVED_AGENTS = [
       { name: 'Default Test Agent', id: '1b81b9ed-ce6a-4b73-9f71-94cc0a9c4ab0' },
     ];
-    var AGENT_BASE_URL = 'https://aiseller.dev.docketai.com';
     var SLACK_API_PATH = '/api/slack';
     var PORTKEY_ORG_IDS = {
       app: '0501e7ad-fe7d-4304-a2b3-9d3a73176fcf',
@@ -327,29 +320,11 @@
       app: { baseUrl: 'https://logging.app.docketai.com', dataViewId: 'fec2389e-a11f-483b-8522-7f6491a7109c' },
     };
 
-    // ─── State ───────────────────────────────────────────────────────
-    var currentAgentId = null;
-    var currentEnv = 'app';
+    var params = new URLSearchParams(window.location.search);
+    var currentAgentId = params.get('agent') || null;
+    var currentEnv = params.get('env') || 'app';
     var detectedConvId = null;
     var detectedVisitorId = null;
-
-    // ─── Listen for postMessage from Docket iframe ───────────────────
-    window.addEventListener('message', function(e) {
-      if (!e.data || typeof e.data !== 'object') return;
-      var d = e.data;
-      var cid = d.conversation_id || d.conversationId || (d.data && (d.data.conversation_id || d.data.conversationId));
-      var vid = d.visitor_id || d.visitorId || (d.data && d.data.visitor && d.data.visitor.id) || (d.visitor && d.visitor.id);
-      if (cid) {
-        detectedConvId = cid;
-        var el = document.getElementById('fbConvId');
-        if (el && !el.value) { el.value = cid; el.classList.add('has-value'); }
-      }
-      if (vid) {
-        detectedVisitorId = vid;
-        var el = document.getElementById('fbVisitorId');
-        if (el && !el.value) { el.value = vid; el.classList.add('has-value'); }
-      }
-    });
 
     // ─── Init ────────────────────────────────────────────────────────
     (function init() {
@@ -364,64 +339,40 @@
         if (select.value) document.getElementById('agentInput').value = select.value;
       });
 
-      var params = new URLSearchParams(window.location.search);
-      var envFromUrl = params.get('env');
-      if (envFromUrl) {
-        currentEnv = envFromUrl;
-        document.querySelectorAll('.env-btn').forEach(function(b) {
-          b.classList.toggle('active', b.dataset.env === currentEnv);
-        });
+      document.querySelectorAll('.env-btn').forEach(function(b) {
+        b.classList.toggle('active', b.dataset.env === currentEnv);
+      });
+
+      if (currentAgentId) {
+        document.getElementById('agentInput').value = currentAgentId;
+        var match = SAVED_AGENTS.find(function(a) { return a.id === currentAgentId; });
+        if (match) select.value = currentAgentId;
+        document.getElementById('emptyState').style.display = 'none';
+        document.getElementById('resetBtn').style.display = 'inline-flex';
+        document.getElementById('fab').style.display = 'flex';
+        document.getElementById('statusPill').style.display = 'flex';
+        document.getElementById('statusAgentId').textContent = currentAgentId;
+        document.getElementById('idsBar').classList.add('visible');
+        startPolling();
       }
-
-      var agentFromUrl = params.get('agent');
-      if (agentFromUrl) showAgent(agentFromUrl);
     })();
-
-    // ─── Show agent (full-page iframe) ───────────────────────────────
-    function showAgent(agentId) {
-      currentAgentId = agentId;
-      document.getElementById('agentInput').value = agentId;
-
-      var match = SAVED_AGENTS.find(function(a) { return a.id === agentId; });
-      if (match) document.getElementById('agentSelect').value = agentId;
-
-      document.getElementById('emptyState').style.display = 'none';
-      document.getElementById('resetBtn').style.display = 'inline-flex';
-      document.getElementById('fab').style.display = 'flex';
-      document.getElementById('statusPill').style.display = 'flex';
-      document.getElementById('statusAgentId').textContent = agentId;
-
-      var old = document.getElementById('agentFrame');
-      if (old) old.remove();
-
-      var iframe = document.createElement('iframe');
-      iframe.id = 'agentFrame';
-      iframe.src = AGENT_BASE_URL + '/' + agentId + '/';
-      iframe.loading = 'lazy';
-      iframe.allow = 'microphone';
-      iframe.allowFullscreen = true;
-      document.getElementById('main').appendChild(iframe);
-
-      var url = new URL(window.location.origin + window.location.pathname);
-      url.searchParams.set('agent', agentId);
-      url.searchParams.set('env', currentEnv);
-      history.replaceState(null, '', url.toString());
-    }
 
     // ─── Load Agent ──────────────────────────────────────────────────
     function loadAgent() {
       var agentId = document.getElementById('agentInput').value.trim() || document.getElementById('agentSelect').value;
       if (!agentId) { toast('Please select or enter an agent ID', 'error'); return; }
-      showAgent(agentId);
-      toast('Agent loaded', 'success');
+      localStorage.clear();
+      var url = new URL(window.location.origin + window.location.pathname);
+      url.searchParams.set('agent', agentId);
+      url.searchParams.set('env', currentEnv);
+      window.location.href = url.toString();
     }
 
-    // ─── Reset Chat (reload iframe for fresh session) ────────────────
+    // ─── Reset Chat ──────────────────────────────────────────────────
     function resetChat() {
       if (!currentAgentId) return;
-      var iframe = document.getElementById('agentFrame');
-      if (iframe) iframe.src = AGENT_BASE_URL + '/' + currentAgentId + '/?t=' + Date.now();
-      toast('Chat reset — fresh session', 'success');
+      localStorage.clear();
+      window.location.reload();
     }
 
     // ─── Environment toggle ──────────────────────────────────────────
@@ -433,41 +384,69 @@
       var url = new URL(window.location.href);
       url.searchParams.set('env', env);
       history.replaceState(null, '', url.toString());
+      updateLinks();
       toast('Environment: ' + env.toUpperCase(), 'info');
     }
 
-    // ─── Feedback ────────────────────────────────────────────────────
-    function toggleFeedback() {
-      var panel = document.getElementById('fbPanel');
-      var isOpen = panel.classList.toggle('open');
-      if (isOpen) {
-        updateMeta();
-        // Pre-fill with detected IDs if fields are empty
-        var convEl = document.getElementById('fbConvId');
-        var visEl = document.getElementById('fbVisitorId');
-        if (detectedConvId && !convEl.value) { convEl.value = detectedConvId; convEl.classList.add('has-value'); }
-        if (detectedVisitorId && !visEl.value) { visEl.value = detectedVisitorId; visEl.classList.add('has-value'); }
-        document.getElementById('fbText').focus();
-      }
+    // ─── Poll localStorage for conversation/visitor IDs ──────────────
+    function startPolling() {
+      pollLocalStorage();
+      setInterval(pollLocalStorage, 2000);
     }
 
-    // Toggle green border on ID inputs
-    document.addEventListener('input', function(e) {
-      if (e.target.classList && e.target.classList.contains('fb-id-input')) {
-        e.target.classList.toggle('has-value', !!e.target.value.trim());
+    function pollLocalStorage() {
+      var data = extractFromLocalStorage();
+      if (data.conversationId && data.conversationId !== detectedConvId) {
+        detectedConvId = data.conversationId;
+        var el = document.getElementById('convValue');
+        el.textContent = detectedConvId;
+        el.classList.remove('waiting');
       }
-    });
+      if (data.visitorId && data.visitorId !== detectedVisitorId) {
+        detectedVisitorId = data.visitorId;
+        var el = document.getElementById('visValue');
+        el.textContent = detectedVisitorId;
+        el.classList.remove('waiting');
+      }
+      updateLinks();
+    }
 
-    function updateMeta() {
-      var label = (SAVED_AGENTS.find(function(a) { return a.id === currentAgentId; }) || {}).name || 'Custom';
-      document.getElementById('fbMeta').innerHTML =
-        '<b>Agent:</b> ' + label +
-        '<br><b>ID:</b> <code>' + (currentAgentId || 'N/A') + '</code>' +
-        '<br><b>Env:</b> ' + currentEnv.toUpperCase();
+    function extractFromLocalStorage() {
+      var result = { conversationId: null, visitorId: null };
+      for (var idx = 0; idx < localStorage.length; idx++) {
+        var key = localStorage.key(idx);
+        var val = localStorage.getItem(key) || '';
+        if (/conversation.?id/i.test(key)) { result.conversationId = val.replace(/"/g, ''); continue; }
+        if (/visitor.?id/i.test(key)) { result.visitorId = val.replace(/"/g, ''); continue; }
+        try {
+          var p = JSON.parse(val);
+          if (p && typeof p === 'object') {
+            var cid = p.conversation_id || p.conversationId || (p.data && p.data.conversation_id);
+            var vid = p.visitor_id || p.visitorId || (p.visitor && p.visitor.id) || (p.data && p.data.visitor && p.data.visitor.id);
+            if (cid) result.conversationId = cid;
+            if (vid) result.visitorId = vid;
+          }
+        } catch (e) {}
+      }
+      return result;
+    }
+
+    // ─── Update Portkey/Kibana links ─────────────────────────────────
+    function updateLinks() {
+      var pkEl = document.getElementById('portkeyLink');
+      var kbEl = document.getElementById('kibanaLink');
+      if (detectedConvId) {
+        pkEl.href = buildPortkeyUrl(detectedConvId);
+        pkEl.classList.remove('disabled');
+        kbEl.href = buildKibanaUrl(detectedConvId);
+        kbEl.classList.remove('disabled');
+      } else {
+        pkEl.classList.add('disabled');
+        kbEl.classList.add('disabled');
+      }
     }
 
     function buildPortkeyUrl(cid) {
-      if (!cid) return null;
       var orgId = PORTKEY_ORG_IDS[currentEnv];
       var now = new Date();
       var dr = JSON.stringify({ startDate: new Date(now.getTime() - 30*86400000).toISOString(), endDate: now.toISOString(), placeHolder: 'Last 30 days' });
@@ -475,7 +454,6 @@
     }
 
     function buildKibanaUrl(cid) {
-      if (!cid) return null;
       var c = KIBANA_CONFIG[currentEnv];
       var q = 'msg%20:%20%22' + cid + '%22';
       var g = "(filters:!(),refreshInterval:(pause:!t,value:60000),time:(from:now-30d%2Fd,to:now))";
@@ -483,7 +461,37 @@
       return c.baseUrl + '/app/discover#/?_g=' + g + '&_a=' + a;
     }
 
-    // ─── Send to Slack via serverless proxy ──────────────────────────
+    // ─── Copy IDs ────────────────────────────────────────────────────
+    function copyId(type) {
+      var val = type === 'conv' ? detectedConvId : detectedVisitorId;
+      if (!val) return;
+      navigator.clipboard.writeText(val);
+      var chip = document.getElementById(type === 'conv' ? 'convChip' : 'visChip');
+      chip.classList.add('copied');
+      setTimeout(function() { chip.classList.remove('copied'); }, 1500);
+      toast('Copied!', 'success');
+    }
+
+    // ─── Feedback ────────────────────────────────────────────────────
+    function toggleFeedback() {
+      var panel = document.getElementById('fbPanel');
+      var isOpen = panel.classList.toggle('open');
+      if (isOpen) {
+        updateFeedbackMeta();
+        document.getElementById('fbText').focus();
+      }
+    }
+
+    function updateFeedbackMeta() {
+      var label = (SAVED_AGENTS.find(function(a) { return a.id === currentAgentId; }) || {}).name || 'Custom';
+      var html = '<b>Agent:</b> ' + label + ' &middot; <b>Env:</b> ' + currentEnv.toUpperCase();
+      if (detectedConvId) html += '<br><b>Conv:</b> <code>' + detectedConvId + '</code>';
+      if (detectedVisitorId) html += '<br><b>Visitor:</b> <code>' + detectedVisitorId + '</code>';
+      if (!detectedConvId && !detectedVisitorId) html += '<br><span style="color:#404040">Chat with the agent to capture IDs</span>';
+      document.getElementById('fbMeta').innerHTML = html;
+    }
+
+    // ─── Send to Slack ───────────────────────────────────────────────
     async function sendToSlack() {
       var btn = document.getElementById('slackBtn');
       var textarea = document.getElementById('fbText');
@@ -491,33 +499,31 @@
       if (!comment) { toast('Please add a comment', 'error'); return; }
       if (!currentAgentId) { toast('No agent loaded', 'error'); return; }
 
-      var convId = document.getElementById('fbConvId').value.trim();
-      var visitorId = document.getElementById('fbVisitorId').value.trim();
       var now = new Date();
       var label = (SAVED_AGENTS.find(function(a) { return a.id === currentAgentId; }) || {}).name || 'Custom';
 
       var blocks = [
         { type: 'header', text: { type: 'plain_text', text: 'Agent Test Feedback', emoji: true } },
         { type: 'section', fields: [
-            { type: 'mrkdwn', text: '*Conversation ID:*\n`' + (convId || 'N/A') + '`' },
-            { type: 'mrkdwn', text: '*Visitor ID:*\n`' + (visitorId || 'N/A') + '`' },
+            { type: 'mrkdwn', text: '*Conversation ID:*\n`' + (detectedConvId || 'N/A') + '`' },
+            { type: 'mrkdwn', text: '*Visitor ID:*\n`' + (detectedVisitorId || 'N/A') + '`' },
             { type: 'mrkdwn', text: '*Environment:*\n' + currentEnv.toUpperCase() },
             { type: 'mrkdwn', text: '*Time:*\n' + now.toLocaleString() },
         ]},
         { type: 'section', fields: [
             { type: 'mrkdwn', text: '*Agent:*\n' + label + '\n`' + currentAgentId + '`' },
-            { type: 'mrkdwn', text: '*Standalone:*\n<' + AGENT_BASE_URL + '/' + currentAgentId + '|Open Agent>' },
+            { type: 'mrkdwn', text: '*Standalone:*\n<https://aiseller.dev.docketai.com/' + currentAgentId + '|Open Agent>' },
         ]},
         { type: 'section', text: { type: 'mrkdwn', text: '*Comment:*\n' + comment } },
       ];
 
-      if (convId) {
-        var pkUrl = buildPortkeyUrl(convId);
-        var kbUrl = buildKibanaUrl(convId);
-        var actionElements = [];
-        if (pkUrl) actionElements.push({ type: 'button', text: { type: 'plain_text', text: 'Portkey Logs' }, url: pkUrl });
-        if (kbUrl) actionElements.push({ type: 'button', text: { type: 'plain_text', text: 'Kibana Logs' }, url: kbUrl });
-        if (actionElements.length) blocks.push({ type: 'actions', elements: actionElements });
+      if (detectedConvId) {
+        var pkUrl = buildPortkeyUrl(detectedConvId);
+        var kbUrl = buildKibanaUrl(detectedConvId);
+        blocks.push({ type: 'actions', elements: [
+          { type: 'button', text: { type: 'plain_text', text: 'Portkey Logs' }, url: pkUrl },
+          { type: 'button', text: { type: 'plain_text', text: 'Kibana Logs' }, url: kbUrl },
+        ]});
       }
 
       blocks.push({ type: 'context', elements: [{ type: 'mrkdwn', text: 'Sent from Docket Agent Tester' }] });
