@@ -267,7 +267,7 @@
       // { name: 'Client Name', id: 'their-agent-id-here' },
     ];
 
-    var SLACK_WEBHOOK_URL = 'https://hooks.slack.com/services/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';
+    var SLACK_API_PATH = '/api/slack';
     var PORTKEY_ORG_IDS = {
       app: '0501e7ad-fe7d-4304-a2b3-9d3a73176fcf',
       dev: 'd89a67c9-a650-4107-bad4-c3d3cd7641cb',
@@ -434,18 +434,13 @@
       btn.textContent = 'Sending...';
 
       try {
-        // Slack webhooks don't support CORS from browsers.
-        // Use mode: 'no-cors' with form-encoded payload to bypass preflight.
-        // The request is sent but the response is opaque (can't read status).
-        await fetch(SLACK_WEBHOOK_URL, {
+        var resp = await fetch(SLACK_API_PATH, {
           method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: 'payload=' + encodeURIComponent(JSON.stringify({ blocks: blocks })),
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ blocks: blocks }),
         });
-
-        // With no-cors we can't verify the response, but if fetch didn't throw
-        // a network error the request was sent successfully
+        var result = await resp.json();
+        if (!resp.ok) throw new Error(result.error || 'Status ' + resp.status);
         btn.classList.add('sent');
         btn.textContent = '✓ Sent';
         textarea.value = '';
@@ -453,7 +448,7 @@
       } catch (err) {
         btn.classList.add('error');
         btn.textContent = 'Failed';
-        showToast('Network error sending to Slack', 'error');
+        showToast('Failed: ' + err.message, 'error');
       }
 
       setTimeout(function() {
